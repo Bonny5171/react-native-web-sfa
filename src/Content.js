@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ImageBackground, StatusBar, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { StackNavigator, createNavigationContainer } from 'react-navigation';
-import { Font } from 'expo';
+import * as Font from 'expo-font'
 // import Toaster from './components/Toaster';
 // import { Menu, ModalZoom, ModalVideo, ModalMask, GSItem, GSubmenu, Panel } from './components';
 import { backgroundVendor, backgroundAdmin } from './assets/images';
