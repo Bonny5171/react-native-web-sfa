@@ -16,15 +16,17 @@ class Loading extends React.Component {
     this.props.acSetAppName(app);
     try {
       const initialRouteName = await getInitialRouteName();
-      const resetAction = NavigationActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: initialRouteName })],
-      });
-      if (initialRouteName === 'setup' || initialRouteName === 'main') this.props.acUpdateContext('Setup');
-      this.props.navigation.dispatch(resetAction);
+      console.log('ROTA INCIAL', initialRouteName);
+
+      // const resetAction = NavigationActions.reset({
+      //   index: 0,
+      //   actions: [NavigationActions.navigate({ routeName: initialRouteName })],
+      // });
+      // if (initialRouteName === 'setup' || initialRouteName === 'main') this.props.acUpdateContext('Setup');
+      // this.props.navigation.dispatch(resetAction);
     } catch (error) {
-      console.log('Erro ao definir pagina inicial do app.', error);
-      if (this._mounted) this.setState({ feedback: 'Erro ao realizar o download do banco de dados, entre em contato com o administrador.' });
+      // console.log('Erro ao definir pagina inicial do app.', error);
+      // if (this._mounted) this.setState({ feedback: 'Erro ao realizar o download do banco de dados, entre em contato com o administrador.' });
     }
   }
   componentWillUnmount() {

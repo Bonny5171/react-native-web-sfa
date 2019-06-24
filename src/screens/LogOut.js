@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, AsyncStorage, Platform } from 'react-native';
-import { FileSystem, Updates } from 'expo';
+import { Updates } from 'expo';
 import { dropRepo as dropAccountDb } from '../services/Repository/AccountDb';
 import { dropRepo as dropProductDb } from '../services/Repository/ProductDb';
 import { dropRepo as dropSetupDb } from '../services/Repository/SetupDb';

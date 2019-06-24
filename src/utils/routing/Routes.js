@@ -1,7 +1,7 @@
-// import Main from '../../screens/Main';
+import Main from '../../screens/Main';
 import Teste from '../../screens/Teste';
 // import LogOut from '../../screens/LogOut';
-// import Loading from '../../screens/Loading';
+import Loading from '../../screens/Loading';
 // import TesteZoom from '../../screens/TesteZoom';
 // import SyncPanel from '../../screens/SyncPanel';
 
@@ -19,12 +19,12 @@ export default {
   teste: {
     screen: Teste
   },
-  // def: {
-  //   screen: Loading
-  // },
-  // main: {
-  //   screen: Main
-  // },
+  def: {
+    screen: Loading
+  },
+  main: {
+    screen: Main
+  },
   // setup: {
   //   screen: Setup
   // },

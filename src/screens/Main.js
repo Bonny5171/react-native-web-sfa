@@ -17,11 +17,12 @@ import { acSetUserInfo, acSetToast, acSetAppName } from '../redux/actions/global
 import { auth, orgId } from '../../config';
 import { backgroundAdmin, apps } from '../assets/images';
 import { Font } from '../assets/fonts/font_names';
-import { SimpleButton, InfoMsg, } from '../components';
-import Button from '../components/Button';
-import LoadIndicator from '../components/LoadIndicator/LoadIndicator';
+// import { SimpleButton, InfoMsg, } from '../components';
+// import Button from '../components/Button';
+// import LoadIndicator from '../components/LoadIndicator/LoadIndicator';
 import global from '../assets/styles/global';
-import { ToastStyles } from '../components/Toaster';
+// import { ToastStyles } from '../components/Toaster';
+
 class MainScreen extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -107,17 +108,18 @@ class MainScreen extends React.PureComponent {
             )
             :
             (
-              <LoadIndicator
-                isLoading={this.state.loading}
-                size="large"
-                containerStyle={{ flex: 1, height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center' }}
-              >
-                <Text style={[global.h4, { marginTop: 60 }]}>Seja bem-vindo ao aplicativo de vendas da Grendene!</Text>
-                <Text style={[global.h4, { marginTop: 30 }]}>Defina abaixo em qual divisão você quer atuar:</Text>
-                <View style={{ flex: 1, flexDirection: 'row' }}>
-                  {this._renderApps()}
-                </View>
-              </LoadIndicator>
+              // <LoadIndicator
+              //   isLoading={this.state.loading}
+              //   size="large"
+              //   containerStyle={{ flex: 1, height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center' }}
+              // >
+              //   <Text style={[global.h4, { marginTop: 60 }]}>Seja bem-vindo ao aplicativo de vendas da Grendene!</Text>
+              //   <Text style={[global.h4, { marginTop: 30 }]}>Defina abaixo em qual divisão você quer atuar:</Text>
+              //   <View style={{ flex: 1, flexDirection: 'row' }}>
+              //     {this._renderApps()}
+              //   </View>
+              // </LoadIndicator>
+              <Text>LoadIndicator</Text>
             )
         }
       </ImageBackground>
@@ -127,7 +129,7 @@ class MainScreen extends React.PureComponent {
   _renderSecondPage() {
     const communities = this.state.comunidades.map(comunidade => (
       <View key={comunidade.name} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <SimpleButton
+        {/* <SimpleButton
           tchbStyle={{ height: 75, width: 175, borderRadius: 10 }}
           msg={comunidade.name.toUpperCase()}
           action={() => {
@@ -140,14 +142,14 @@ class MainScreen extends React.PureComponent {
             }
             this.props.acSetAppName(appName);
           }}
-        />
+        /> */}
       </View>
     ));
 
     return (
       <ImageBackground source={backgroundAdmin} style={[global.container, { paddingTop: 13 }]} resizeMode="cover">
         <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-          <Button
+          {/* <Button
             txtStyle={{
               fontFamily: Font.C,
               fontSize: 30,
@@ -161,7 +163,7 @@ class MainScreen extends React.PureComponent {
               }
             }}
             txtMsg="v"
-          />
+          /> */}
           <Text style={global.h1}>ACESSO</Text>
         </View>
         <View style={{ flexGrow: 1, marginHorizontal: 30 }}>
@@ -185,13 +187,13 @@ class MainScreen extends React.PureComponent {
                   )
                   }
                   <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', width: '60%', maxWidth: 600, alignSelf: 'center', marginBottom: 40 }}>
-                    <LoadIndicator
+                    {/* <LoadIndicator
                       isLoading={this.state.loading}
                       size="large"
                       containerStyle={{ flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center' }}
                     >
                       {communities}
-                    </LoadIndicator>
+                    </LoadIndicator> */}
                   </View>
                 </React.Fragment>
               )
@@ -304,11 +306,11 @@ class MainScreen extends React.PureComponent {
       if (this._mounted) {
         // console.log('error1', error);
         // console.log('error', error.message);
-        this.props.acSetToast({
-          text: typeof error === 'string' ? error : error.message,
-          styles: ToastStyles.error,
-          shouldOpen: true
-        });
+        // this.props.acSetToast({
+        //   text: typeof error === 'string' ? error : error.message,
+        //   styles: ToastStyles.error,
+        //   shouldOpen: true
+        // });
         this.setState({ hasError: true });
       }
     }
@@ -347,11 +349,11 @@ class MainScreen extends React.PureComponent {
       }
     } catch (error) {
       if (this._mounted) {
-        this.props.acSetToast({
-          text: typeof error === 'string' ? error : error.message,
-          styles: ToastStyles.error,
-          shouldOpen: true
-        });
+        // this.props.acSetToast({
+        //   text: typeof error === 'string' ? error : error.message,
+        //   styles: ToastStyles.error,
+        //   shouldOpen: true
+        // });
         this.setState({ hasError: true });
       }
     }
@@ -457,7 +459,7 @@ const Apps = ({ apps, logos, setState, isMounted, retrieveCommunities }) => {
 
 const TryAgain = ({ retry }) => (
   <View style={global.containerCenter}>
-    <InfoMsg
+    {/* <InfoMsg
       icon="F"
       firstMsg="Tivemos algum problema técnico."
       sndMsg="Tente contatar o suporte ou clicar no botão abaixo."
@@ -469,6 +471,6 @@ const TryAgain = ({ retry }) => (
     <SimpleButton
       action={retry}
       msg="TENTAR NOVAMENTE"
-    />
+    /> */}
   </View>
 );

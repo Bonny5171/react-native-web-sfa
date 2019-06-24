@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ImageBackground, StatusBar, Dimensions } from 'react-native';
+import { View, ImageBackground, StatusBar, Dimensions, YellowBox, } from 'react-native';
 import { connect } from 'react-redux';
 import { StackNavigator, createNavigationContainer } from 'react-navigation';
 import * as Font from 'expo-font'
@@ -22,12 +22,15 @@ import { services } from '../config';
 const tcInstance = {};
 const ddInstance = {};
 const Stack = StackNavigator(Routes, {
-  initialRouteName: 'teste',
+  initialRouteName: 'main',
   //  initialRouteName: process.env.APP_INICIAL_ROUTE_NAME,
   headerMode: 'none',
   transparentCard: true,
   transitionConfig: RightToLeft
 });
+
+// ignore specific yellowbox warnings
+YellowBox.ignoreWarnings(["Require cycle:", "Remote debugger"]);
 
 export class Content extends React.PureComponent {
   constructor(props) {
