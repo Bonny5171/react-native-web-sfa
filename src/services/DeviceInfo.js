@@ -19,9 +19,9 @@ const optionsWeb = {
     language: true
   }
 };
-const _platformProperties = null;
-const _platformPropertiesArray = null;
-const _deviceId = null;
+let _platformProperties = null;
+let _platformPropertiesArray = null;
+let _deviceId = null;
 
 class DeviceInfo {
   static async getDeviceId() {

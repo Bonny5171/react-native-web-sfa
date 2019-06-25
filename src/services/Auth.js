@@ -1,11 +1,10 @@
-
 import { Platform, AsyncStorage } from 'react-native';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system'
 import { services as config } from '../../config';
 import deviceInfo from './DeviceInfo';
 
-// import TrackingChange from './Repository/core/TrackingChange';
-// import DeviceData from './Repository/core/DeviceData';
+import TrackingChange from './Repository/core/TrackingChange';
+import DeviceData from './Repository/core/DeviceData';
 
 const isAuth = async () => {
     if (Platform.OS !== 'web') {
@@ -24,12 +23,15 @@ const isAuth = async () => {
 
 const getLocalStorage = async (name) => {
     let obj = null;
-
+    
+    console.log('getLocalStorage()', Platform);
     if (Platform.OS !== 'web') {
         const result = await AsyncStorage.getItem(name);
         obj = typeof result === 'object' ? JSON.parse(result) : result;
     } else {
+        console.log('name', name);
         obj = typeof window.localStorage[name] === 'object' ? JSON.parse(window.localStorage[name]) : window.localStorage[name];
+        console.log('name', obj);
     }
 
     if (obj) {

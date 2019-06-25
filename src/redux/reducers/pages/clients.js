@@ -1,6 +1,8 @@
 import { updateCurrent, toggleOption } from './common/functions';
 
 const INITIAL_STATE = {
+  initialPopUpFilter: [],
+
   // True = Lista em Box, False = Lista em Grid
   list: true,
 

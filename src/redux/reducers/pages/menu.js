@@ -187,7 +187,7 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case 'update_vendor': {
       // console.log('vendor', action.name);
-      const newState = [...state];
+      const newState = {...state};
       newState.vendor = updateButtons(action.name, [...state.vendor]);
       return { ...state, ...newState };
     }
