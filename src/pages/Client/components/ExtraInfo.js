@@ -238,7 +238,7 @@ const ExtraInfoRow = (props) => {
       >
         {
           data.map((curr, index) => (
-            <View style={{ flex: 1, flexWrap: 'wrap' }} key={index.toString()}>
+            <View style={{ flex: 1, flexWrap: 'wrap' }} key={label.label}>
               {infoElement(curr, allNull = title === 'INFORMAÇÕES FINANCEIRAS' || title === 'OUTRAS INFORMAÇÕES', props)}
             </View>
           ))

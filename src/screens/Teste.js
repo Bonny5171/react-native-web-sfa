@@ -8,9 +8,10 @@ import {
 } from 'react-native';
 // import Toaster, { ToastStyles } from '../components/Toaster';
 import { connect } from 'react-redux';
-import { acNextStep, acNextScreen, changePorcent, changeIndeterminate, acResetPage, changeRetry, } from '../redux/actions/pages/setup';
+// import { acNextStep, acNextScreen, changePorcent, changeIndeterminate, acResetPage, changeRetry, } from '../redux/actions/pages/setup';
 import { acUpdateContext } from '../redux/actions/global';
-// import { onSync } from '../services/SyncDb';
+import { onSync } from '../services/SyncDb';
+// import SyncDbV2 from '../services/SyncDbV2'
 // import squel from 'squel';
 // import DB from '../services/SQLite';
 
@@ -38,7 +39,8 @@ class TesteScreen extends React.Component {
     };
 
     this.onDateChange = this.onDateChange.bind(this);
-
+    // this._DownLoadDb = this._DownLoadDb.bind(this);
+    
     // const messages = [
       // { text: 'FYI' },
       // { text: 'Hooray!', styles: ToastStyles.success },
@@ -145,17 +147,46 @@ class TesteScreen extends React.Component {
   //   await Account.testCRUD();
   // }
 
-  // _DownLoadDb = async () => {
-  //   const { changePorcent, changeIndeterminate, changeRetry } = this.props;
-  //   const deviceId = '111';
-  //   const userId = '111';
-  //   const appId = '111';
-  //   onSync({ service: 'product', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
-  // }
+  _DownLoadDb = async () => {
+    console.log('1111');
+
+    // const { changePorcent, changeIndeterminate, changeRetry } = this.props;
+    const deviceId = '111';
+    const userId = '111';
+    const appId = '111';
+    
+    const changePorcent = (payload) => {
+      return {
+          type: 'change_porc',
+          payload
+      };
+    };
+    const changeIndeterminate = (payload) => {
+      return {
+          type: 'change_indeterminate',
+          payload
+      };
+    };
+    const changeRetry = (payload) => {
+      return {
+          type: 'update_retry',
+          payload
+      };
+    };
+
+    // console.log('this.props', this.props);
+    
+    // console.log('onSync', SyncDbV2);
+    onSync({ service: 'product', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
+    console.log('2222');
+  }
 
   render() {
     const { selectedStartDate } = this.state;
     const startDate = selectedStartDate ? selectedStartDate.toString() : '';
+
+    console.log('this.props.iProgressBar', this.props.iProgressBar);
+
     return (
       <View style={{
         flex: 1,
@@ -165,6 +196,12 @@ class TesteScreen extends React.Component {
       }}
       >
         <Text>estou na pagina teste</Text>
+        <Text>{this.props.iProgressBar.product}</Text>
+        <Button
+          title="Download DB"
+          onPress={this._DownLoadDb}
+        />
+
         {/* <TextInput
           // ref={ref => { this.txtInput = ref; }}
           underlineColorAndroid="transparent"
@@ -300,11 +337,11 @@ const mapStateToProps = state => ({
 );
 
 export default connect(mapStateToProps, {
-  acNextStep,
-  acNextScreen,
-  changePorcent,
-  changeIndeterminate,
-  acUpdateContext,
-  acResetPage,
-  changeRetry,
+  // acNextStep,
+  // acNextScreen,
+  // changePorcent,
+  // changeIndeterminate,
+  // acUpdateContext,
+  // acResetPage,
+  // changeRetry,
 })(TesteScreen);

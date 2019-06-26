@@ -1,3 +1,3 @@
-import { onSync, onSyncUpdate } from './SyncDb';
+import { onSync, } from './SyncDb';
 
-export { onSync, onSyncUpdate };
+export { onSync, };

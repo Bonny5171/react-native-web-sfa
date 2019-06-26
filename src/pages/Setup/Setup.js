@@ -25,9 +25,9 @@ class Setup extends React.Component {
   }
 
   async componentDidMount() {
-    const {
-      changePorcent,
-      changeIndeterminate, changeRetry } = this.props;
+    // const {
+    //   changePorcent,
+    //   changeIndeterminate, changeRetry } = this.props;
 
 
     // REGISTRANDO DEVICE COM EXCEÇÃO DO ANDROID.
@@ -39,10 +39,10 @@ class Setup extends React.Component {
     userId = await getUserId();
     appId = await getAppId();
 
-    onSync({ service: 'account', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
-    onSync({ service: 'product', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
-    onSync({ service: 'setup', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
-    onSync({ service: 'order', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
+    onSync({ service: 'account', deviceId, userId, appId });
+    // onSync({ service: 'product', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
+    // onSync({ service: 'setup', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
+    // onSync({ service: 'order', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
   }
 
   async componentWillMount() {

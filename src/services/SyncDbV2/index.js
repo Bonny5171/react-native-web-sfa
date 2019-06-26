@@ -18,31 +18,18 @@ const servicesInstance = {
 };
 
 
-const onSync = async ({
-  service, 
-  deviceId,
-  userId,
-  appId,
-}) => {
-  const changePorcent = (payload) => {
-    return {
-        type: 'change_porc',
-        payload
-    };
-  };
-  const changeIndeterminate = (payload) => {
-    return {
-        type: 'change_indeterminate',
-        payload
-    };
-  };
-  const changeRetry = (payload) => {
-    return {
-        type: 'update_retry',
-        payload
-    };
-  };
-
+const Syncdb = async (TESTE) => {
+  console.log('<><><><', TESTE);
+  
+  const {
+    service,
+    changePorcent,
+    changeIndeterminate,
+    changeRetry,
+    deviceId,
+    userId,
+    appId,
+  } = TESTE;
   console.log(`deviceId: ${deviceId}`);
   console.log(`userId: ${userId}`);
   console.log(`appId: ${appId}`);
@@ -116,7 +103,7 @@ const onSync = async ({
       console.log('SUCESS', uri, status);
 
       // REGISTRANDO DEVICE COM EXCEÇÃO DO ANDROID.
-      // register(nome, cfg);
+      register(nome, cfg);
       // setTimeout(() => {
       //   register(nome, cfg);
       // }, 3000);
@@ -198,17 +185,17 @@ const onSync = async ({
     }
 
 
-    if (await isDbLocal(cfg.nome, deviceId)) {
-      const obj = {};
-      obj[cfg.nome] = 100;
-      changePorcent(obj);
+    // if (await isDbLocal(cfg.nome, deviceId)) {
+    //   const obj = {};
+    //   obj[cfg.nome] = 100;
+    //   changePorcent(obj);
 
-      const objIndeterminate = {};
-      objIndeterminate[cfg.nome] = false;
-      changeIndeterminate(objIndeterminate);
+    //   const objIndeterminate = {};
+    //   objIndeterminate[cfg.nome] = false;
+    //   changeIndeterminate(objIndeterminate);
 
-      return console.log('BANCO JA EXISTENTE, NÃO SERA FEITO O DOWNLOAD NOVAMENTE.');
-    }
+    //   return console.log('BANCO JA EXISTENTE, NÃO SERA FEITO O DOWNLOAD NOVAMENTE.');
+    // }
 
     if (Platform.OS === 'web') {
       const { nome, storageDb } = cfg;
@@ -216,8 +203,12 @@ const onSync = async ({
       const token = '';
       await processDownload_ELETRON(cfg, nome, url, token);
     } else {
+
+      console.log("cfg cfg cfg", cfg);
       const { nome, storageDb } = cfg;
       const url = `${storageDb}/userId/sfa-${nome}.db?&nocache=${new Date().getTime()}`;
+      console.log("url url url", url);
+
       const options = {};
       await processDownload_NATIVO(cfg, nome, url, options);
     }
@@ -228,6 +219,4 @@ const onSync = async ({
   }
 };
 
-export {
-  onSync
-};
+export default Syncdb;

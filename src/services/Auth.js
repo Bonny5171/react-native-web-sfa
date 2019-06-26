@@ -138,6 +138,7 @@ const isDbLocal = async (db, deviceId) => {
     if (Platform.OS === 'web') {
         local = window.webSqlManager.exists(`sfa-${db}`, 'userId');
     } else {
+        console.log('<><<<<<<<', `${FileSystem.documentDirectory}SQLite/${deviceId}_sfa-${db}.db`);
         const file = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}SQLite/${deviceId}_sfa-${db}.db`);
         local = file.exists;
     }
