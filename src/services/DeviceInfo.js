@@ -1,6 +1,7 @@
 import { Platform, AsyncStorage } from 'react-native';
 import Fingerprint2 from 'fingerprintjs2';
-import { Constants } from 'expo';
+// import { Constants } from 'expo';
+import Constants from 'expo-constants'
 import { services as config } from '../../config';
 import { getToken, getClientInfo } from './Auth';
 import pkg from '../../package.json'

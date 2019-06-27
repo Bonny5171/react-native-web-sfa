@@ -114,22 +114,21 @@ class ModalZoom extends React.PureComponent {
 
   _renderZoom() {
     if (Platform.OS === 'web') {
+      const closeLabel = this._renderCloseLabel();
       const dataSourceBase64 = this.state.loading || this.state.isFirstMount ? (
         <View style={[styles.sizeImage, styles.loadingImage]}>
           <ActivityIndicator size="small" color="#333" />
         </View>
       ) : (
-        // <Zoom
-        //   img={this.state.base64ImageUri ? this.state.base64ImageUri : semImg}
-        //   zoomScale={2}
-        //   width={this.props.window.width}
-        //   height={this.props.window.height}
-        // >
-        //   {closeLabel}
-        // </Zoom>
-        <Text>IMG ZOOM AQUI</Text>
+        <Zoom
+          img={this.state.base64ImageUri ? this.state.base64ImageUri : semImg}
+          zoomScale={2}
+          width={this.props.window.width}
+          height={this.props.window.height}
+        >
+          {closeLabel}
+        </Zoom>
       );
-      const closeLabel = this._renderCloseLabel();
       return (
         <View style={{ backgroundColor: 'white' }}>
           {dataSourceBase64}

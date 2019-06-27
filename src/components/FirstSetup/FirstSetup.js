@@ -15,9 +15,9 @@ class FirstSetup extends React.Component {
       nextStep,
       indeterminate,
       retry,
-      changePorcent,
-      changeIndeterminate,
-      changeRetry,
+      // changePorcent,
+      // changeIndeterminate,
+      // changeRetry,
     } = this.props;
 
     return (
@@ -42,10 +42,10 @@ class FirstSetup extends React.Component {
             indeterminate={indeterminate.product}
             db="PRODUCTS"
             retry={retry}
-            changePorcent={changePorcent}
-            changeIndeterminate={changeIndeterminate}
+            // changePorcent={changePorcent}
+            // changeIndeterminate={changeIndeterminate}
+            // changeRetry={changeRetry}
             service="product"
-            changeRetry={changeRetry}
           />
           <IconProgressBar
             txt="CLIENTES"
@@ -55,10 +55,10 @@ class FirstSetup extends React.Component {
             indeterminate={indeterminate.account}
             db="ACCOUNTS"
             retry={retry}
-            changePorcent={changePorcent}
-            changeIndeterminate={changeIndeterminate}
+            // changePorcent={changePorcent}
+            // changeIndeterminate={changeIndeterminate}
+            // changeRetry={changeRetry}
             service="account"
-            changeRetry={changeRetry}
           />
           <IconProgressBar
             txt="SETUP"
@@ -68,10 +68,10 @@ class FirstSetup extends React.Component {
             indeterminate={indeterminate.setup}
             db="SETUP"
             retry={retry}
-            changePorcent={changePorcent}
-            changeIndeterminate={changeIndeterminate}
+            // changePorcent={changePorcent}
+            // changeIndeterminate={changeIndeterminate}
+            // changeRetry={changeRetry}
             service="setup"
-            changeRetry={changeRetry}
           />
           <IconProgressBar
             txt="PEDIDOS"
@@ -81,10 +81,10 @@ class FirstSetup extends React.Component {
             indeterminate={indeterminate.order}
             db="ORDERS"
             retry={retry}
-            changePorcent={changePorcent}
-            changeIndeterminate={changeIndeterminate}
+            // changePorcent={changePorcent}
+            // changeIndeterminate={changeIndeterminate}
+            // changeRetry={changeRetry}
             service="order"
-            changeRetry={changeRetry}
           />
         </View>
       </View>

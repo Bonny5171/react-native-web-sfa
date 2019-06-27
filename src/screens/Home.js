@@ -9,8 +9,6 @@ import {
   View,
   Button,
 } from 'react-native';
-import { WebBrowser } from 'expo';
-
 
 class HomeScreen extends React.Component {
   render(){

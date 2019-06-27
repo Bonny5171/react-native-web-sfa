@@ -18,10 +18,10 @@ class IconProgressBar extends React.Component {
       indeterminate,
       db,
       retry,
-      changePorcent,
-      changeIndeterminate,
+      // changePorcent,
+      // changeIndeterminate,
+      // changeRetry,
       service,
-      changeRetry,
     } = this.props;
 
     let color = '#999';
@@ -79,10 +79,10 @@ class IconProgressBar extends React.Component {
                 padding: 10
               }}
               onPress={() => {
-                onSync({ service, changePorcent, changeIndeterminate, changeRetry });
-                const retry = {};
-                retry[service] = false;
-                changeRetry(retry);
+                // onSync({ service, changePorcent, changeIndeterminate, changeRetry });
+                // const retry = {};
+                // retry[service] = false;
+                // changeRetry(retry);
               }}
             >
               <Text>Retry</Text>

@@ -8,9 +8,26 @@ import { acNextStep, acNextScreen, changePorcent, changeIndeterminate, acResetPa
 import { acUpdateContext } from '../../redux/actions/global';
 import { Conclusion, FirstSetup, Steps, Media } from '../../components';
 import styles from '../../assets/styles/global';
-import { onSync } from '../../services/SyncDb';
+// import { onSync } from '../../services/SyncDb';
 import deviceInfo from '../../services/DeviceInfo';
-import { getUserId, getAppId } from '../../services/Auth';
+import { getUserId, getAppId, getToken, isDbLocal, } from '../../services/Auth';
+import * as FileSystem from 'expo-file-system'
+import { services } from '../../../config';
+
+import Product from '../../services/Product';
+import Account from '../../services/Account';
+import SetupPage from '../../services/Setup';
+import Resource from '../../services/Resource';
+import Order from '../../services/Order';
+
+const servicesInstance = {
+  product: Product,
+  account: Account,
+  setup: SetupPage,
+  order: Order,
+  resource: Resource
+};
+
 
 class Setup extends React.Component {
   constructor(props) {
@@ -24,25 +41,212 @@ class Setup extends React.Component {
     this.areDbsComplete = this.areDbsComplete.bind(this);
   }
 
+  async onSync({ service, deviceId, userId, appId, }) {
+    // const { changePorcent, changeIndeterminate, changeRetry } = this.props;
+    
+    console.log('changePorcent', this.props.changePorcent);
+    console.log('changeIndeterminate', this.props.changeIndeterminate);
+    console.log('changeRetry', this.props.changeRetry);
+
+    console.log(`deviceId: ${deviceId}`);
+    console.log(`userId: ${userId}`);
+    console.log(`appId: ${appId}`);
+  
+    const hasFileSystemPath = async () => {
+      // Valida se tem o local para salvar os bancos.
+      const fileUri = `${FileSystem.documentDirectory}SQLite`;
+      const pathStore = await FileSystem.getInfoAsync(fileUri, {});
+  
+      console.log('VALIDANDO SE TENHO O PATH PARA SALVAR O BANCO.', pathStore.exists);
+      if (pathStore.exists !== 1) {
+        console.log('Cria a pasta para salvar os bancos: ', fileUri);
+  
+        try {
+          await FileSystem.makeDirectoryAsync(fileUri, {});
+        } catch (error) {
+          console.log('error', error);
+        }
+      }
+    };
+  
+    const register = async (nome, cfg) => {
+      servicesInstance[nome].saveParameter('CURRENT_DEVICE_ID', deviceId);
+      servicesInstance[nome].saveParameter('CURRENT_USER_ID', userId);
+      servicesInstance[nome].saveParameter('CURRENT_APP_ID', appId);
+    };
+  
+    const processDownload_NATIVO = async (cfg, nome, url, options) => {
+      tentativas++;
+  
+      console.log(`TENTATIVA "${tentativas}" - INICIANDO PROCESSO DOWNLOAD NO NATIVO NA URL: ${url}`);
+  
+      const nameDb = `sfa-${nome}.db`;
+  
+      // Verifica se tem o path onde sera salvo os Dbs, e os cria se não existir.
+      await hasFileSystemPath();
+  
+      let percentInt = 0;
+  
+      // Progresso do download.
+      global.downloadResumable = FileSystem.createDownloadResumable(
+        url,
+        FileSystem.documentDirectory + 'SQLite/' + deviceId + '_' + nameDb,
+        options,
+        (downloadProgress) => {
+          const percent = (downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite) * 100;
+          const hasError = percent === 100 && percentInt === 0;
+          if (hasError) {
+            return false;
+          }
+  
+          if (parseInt(percent, 10) > percentInt) {
+            percentInt = parseInt(percent, 10);
+            console.log(`Status download: ${nameDb} ${percentInt}%`);
+  
+            const obj = {};
+            obj[nome] = percentInt;
+            this.props.changePorcent(obj);
+  
+            const objIndeterminate = {};
+            objIndeterminate[nome] = false;
+            this.props.changeIndeterminate(objIndeterminate);
+          }
+        },
+      );
+  
+      // Start downlodad;
+      const { uri, status } = await global.downloadResumable.resumeAsync();
+  
+      if (status === 200) {
+        console.log('SUCESS', uri, status);
+  
+        // REGISTRANDO DEVICE COM EXCEÇÃO DO ANDROID.
+        // register(nome, cfg);
+        // setTimeout(() => {
+        //   register(nome, cfg);
+        // }, 3000);
+      } else {
+        if (tentativas < nMaxtentativas) {
+          const { host, version, path } = cfg;
+          const newUrl = `${host}${version}${path.db}?compress=false&nocache=${new Date().getTime()}`;
+          const newOptions = { md5: null, headers: { Authorization: 'Bearer ' + (await getToken()) } };
+          await processDownload_NATIVO(cfg, nome, newUrl, newOptions);
+        } else {
+          console.log(`NUMERO DE TENTATIVAS ESGOTADA, HABILITADO BOTÃO RETRY PARA O DB "${nome}"`);
+          const retry = {};
+          retry[nome] = true;
+          this.props.changeRetry(retry);
+        }
+      }
+    };
+  
+    const processDownload_ELETRON = async (cfg, nome, url, token) => {
+      tentativas++;
+  
+      console.log(`TENTATIVA "${tentativas}" - INICIANDO PROCESSO DOWNLOAD NO ELETRON NA URL: ${url}`);
+  
+      const nameDb = `sfa-${nome}`;
+  
+      // Progresso do download.
+      window.webSqlManager.on(`${nameDb}::downloadProgress`, (status) => {
+        const obj = {};
+        obj[nome] = status.percent;
+        this.props.changePorcent(obj);
+  
+        const objIndeterminate = {};
+        objIndeterminate[nome] = false;
+        this.props.changeIndeterminate(objIndeterminate);
+  
+        //console.log('Donwload no Eletron Status porcent:', status.percent);
+      });
+  
+      // GET DE FATO.
+      window.webSqlManager.load(nameDb, 'userId', url, token).then(
+        // Success
+        async (r) => {
+          console.log('SUCESS', r.message);
+  
+          // REGISTRANDO DEVICE COM EXCEÇÃO DO ANDROID.
+          setTimeout(() => {
+            register(nome, cfg);
+          }, 3000);
+        },
+        // Error
+        async (r) => {
+          console.log('ERROR', r.message);
+          if (tentativas < nMaxtentativas) {
+            const { nome, host, version, path } = cfg;
+            const token = await getToken();
+            const url = `${host}${version}${path.db}?compress=true&nocache=${new Date().getTime()}&access_token=${token}`;
+  
+            // console.log('REQUEST NA API', url, token);
+  
+            await processDownload_ELETRON(cfg, nome, url, token);
+          } else {
+            console.log(`NUMERO DE TENTATIVAS ESGOTADA, HABILITADO BOTÃO RETRY PARA O DB "${nome}"`);
+            const retry = {};
+            retry[nome] = true;
+            this.props.changeRetry(retry);
+          }
+        }
+      );
+    };
+  
+    let tentativas = 0;
+  
+    const nMaxtentativas = 5;
+  
+    try {
+      const cfg = services.find(srv => srv.nome === service);
+      if (!cfg) {
+        throw new Error(`Oooops! para o serviço ${service} não foi localizado sua configuração para prosseguir.`);
+      }
+  
+  
+      if (await isDbLocal(cfg.nome, deviceId)) {
+        const obj = {};
+        obj[cfg.nome] = 100;
+        this.props.changePorcent(obj);
+  
+        const objIndeterminate = {};
+        objIndeterminate[cfg.nome] = false;
+        this.props.changeIndeterminate(objIndeterminate);
+  
+        return console.log('BANCO JA EXISTENTE, NÃO SERA FEITO O DOWNLOAD NOVAMENTE.');
+      }
+  
+      if (Platform.OS === 'web') {
+        const { nome, storageDb } = cfg;
+        const url = `${storageDb}/userId/sfa-${nome}.zip?&nocache=${new Date().getTime()}`;
+        const token = '';
+        await processDownload_ELETRON(cfg, nome, url, token);
+      } else {
+        const { nome, storageDb } = cfg;
+        const url = `${storageDb}/userId/sfa-${nome}.db?&nocache=${new Date().getTime()}`;
+        const options = {};
+        await processDownload_NATIVO(cfg, nome, url, options);
+      }
+  
+      console.log('PROCESSO FINALIZADO');
+    } catch (error) {
+      console.log(`ERRO: ${error}.`);
+    }
+  };
+  
   async componentDidMount() {
-    // const {
-    //   changePorcent,
-    //   changeIndeterminate, changeRetry } = this.props;
-
-
     // REGISTRANDO DEVICE COM EXCEÇÃO DO ANDROID.
-    let deviceId,
-      userId,
-      appId;
+    let deviceId, userId, appId;
     deviceId = await deviceInfo.getDeviceId();
     deviceId = deviceId || await deviceInfo.registerDevice();
     userId = await getUserId();
     appId = await getAppId();
 
-    onSync({ service: 'account', deviceId, userId, appId });
-    // onSync({ service: 'product', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
-    // onSync({ service: 'setup', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
-    // onSync({ service: 'order', changePorcent, changeIndeterminate, changeRetry, deviceId, userId, appId });
+    console.log('>>>', this.props);
+
+    this.onSync({ service: 'account', deviceId, userId, appId });
+    this.onSync({ service: 'product', deviceId, userId, appId });
+    this.onSync({ service: 'setup', deviceId, userId, appId });
+    this.onSync({ service: 'order', deviceId, userId, appId });
   }
 
   async componentWillMount() {
@@ -128,15 +332,15 @@ class Setup extends React.Component {
                       iProgressBar={iProgressBar}
                       indeterminate={indeterminate}
                       retry={retry}
-                      changePorcent={changePorcent}
-                      changeIndeterminate={changeIndeterminate}
-                      changeRetry={changeRetry}
+                      // changePorcent={changePorcent}
+                      // changeIndeterminate={changeIndeterminate}
+                      // changeRetry={changeRetry}
                     />,
                     <Media
-                      onSync={onSync}
-                      changePorcent={changePorcent}
-                      changeIndeterminate={this.props.changeIndeterminate}
-                      changeRetry={changeRetry}
+                      onSync={this.onSync}
+                      changePorcent={this.props.changePorcent}
+                      // changeIndeterminate={this.props.changeIndeterminate}
+                      // changeRetry={changeRetry}
                       retry={retry}
                       nextStep={acNextStep}
                       iProgressBar={iProgressBar}

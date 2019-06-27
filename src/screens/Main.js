@@ -11,7 +11,9 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
-import { WebBrowser, Constants } from 'expo';
+// import { Constants } from 'expo';
+import Constants from 'expo-constants'
+import * as WebBrowser from 'expo-web-browser'
 import { decode } from 'base-64';
 import { acSetUserInfo, acSetToast, acSetAppName } from '../redux/actions/global';
 import { auth, orgId } from '../../config';

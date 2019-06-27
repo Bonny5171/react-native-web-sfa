@@ -72,13 +72,12 @@ class Assistant extends React.Component {
   }
 
   async componentDidMount() {
-    const { acSetClients } = this.props;
     this._mounted = true;
     await this.loadTables();
     const result = await assistant.getClients(this.props.appDevName);
     this._result = true;
     // console.log('resultsss', result);
-    acSetClients(result);
+    this.props.acSetClients(result);
     if (this._mounted) this.setState({ isQuering: false });
     // if (!this.state.haveClients && result.length > 0) this.setState({ haveClients: true });
     const usrInfo = JSON.parse(await AsyncStorage.getItem('clientInfo'));
